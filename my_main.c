@@ -11,7 +11,6 @@
   the required action from the list below:
 
   push: push a new origin matrix onto the origin stack
-
   pop: remove the top matrix on the origin stack
 
   move/scale/rotate: create a transformation matrix
@@ -25,13 +24,13 @@
                     current top of the origins stack, then
                     call draw_polygons.
 
-  line: create a line based on the provided values. Store
+  line: create a line based on the provided values. Stores
         that in a temporary matrix, multiply it by the
         current top of the origins stack, then call draw_lines.
 
   save: call save_extension with the provided filename
 
-  display: view the screen
+  display: view the image live
   =========================*/
 
 #include <stdio.h>
@@ -49,6 +48,104 @@
 #include "stack.h"
 #include "gmath.h"
 
+
+/*======== void first_pass() ==========
+  Inputs:
+  Returns:
+
+  Checks the op array for any animation commands
+  (frames, basename, vary)
+
+  Should set num_frames and basename if the frames
+  or basename commands are present
+
+  If vary is found, but frames is not, the entire
+  program should exit.
+
+  If frames is found, but basename is not, set name
+  to some default value, and print out a message
+  with the name being used.
+  ====================*/
+void first_pass() {
+  //in order to use name and num_frames throughout
+  //they must be extern variables
+  extern int num_frames;
+  extern char name[128];
+
+}
+
+/*======== struct vary_node ** second_pass() ==========
+  Inputs:
+  Returns: An array of vary_node linked lists
+
+  In order to set the knobs for animation, we need to keep
+  a seaprate value for each knob for each frame. We can do
+  this by using an array of linked lists. Each array index
+  will correspond to a frame (eg. knobs[0] would be the first
+  frame, knobs[2] would be the 3rd frame and so on).
+
+  Each index should contain a linked list of vary_nodes, each
+  node contains a knob name, a value, and a pointer to the
+  next node.
+
+  Go through the opcode array, and when you find vary, go
+  from knobs[0] to knobs[frames-1] and add (or modify) the
+  vary_node corresponding to the given knob with the
+  appropirate value.
+  ====================*/
+struct vary_node ** second_pass() {
+  return NULL;
+}
+
+/*======== void print_knobs() ==========
+Inputs:
+Returns:
+
+Goes through symtab and display all the knobs and their
+currnt values
+====================*/
+void print_knobs() {
+  int i;
+
+  printf( "ID\tNAME\t\tTYPE\t\tVALUE\n" );
+  for ( i=0; i < lastsym; i++ ) {
+
+    if ( symtab[i].type == SYM_VALUE ) {
+      printf( "%d\t%s\t\t", i, symtab[i].name );
+
+      printf( "SYM_VALUE\t");
+      printf( "%6.2f\n", symtab[i].s.value);
+    }
+  }
+}
+
+/*======== void my_main() ==========
+  Inputs:
+  Returns:
+
+  This is the main engine of the interpreter, it should
+  handle most of the commadns in mdl.
+
+  If frames is not present in the source (and therefore
+  num_frames is 1, then process_knobs should be called.
+
+  If frames is present, the enitre op array must be
+  applied frames time. At the end of each frame iteration
+  save the current screen to a file named the
+  provided basename plus a numeric string such that the
+  files will be listed in order, then clear the screen and
+  reset any other data structures that need it.
+
+  Important note: you cannot just name your files in
+  regular sequence, like pic0, pic1, pic2, pic3... if that
+  is done, then pic1, pic10, pic11... will come before pic2
+  and so on. In order to keep things clear, add leading 0s
+  to the numeric portion of the name. If you use sprintf,
+  you can use "%0xd" for this purpose. It will add at most
+  x 0s in front of a number, if needed, so if used correctly,
+  and x = 4, you would get numbers like 0001, 0002, 0011,
+  0487
+  ====================*/
 void my_main() {
 
   int i;
