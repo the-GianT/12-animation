@@ -72,6 +72,24 @@ void first_pass() {
   extern int num_frames;
   extern char name[128];
 
+  for (i=0;i<lastop;i++)
+    {
+      switch (op[i].opcode)
+	{
+	case FRAMES:
+	  printf("Num frames: %4.0f\n",num_frames = op[i].op.frames.num_frames);
+	  break;
+	case BASENAME:
+	  // strncpy(
+	case VARY:
+          printf("Vary: %4.0f %4.0f, %4.0f %4.0f\n",
+                 op[i].op.vary.start_frame,
+                 op[i].op.vary.end_frame,
+                 op[i].op.vary.start_val,
+                 op[i].op.vary.end_val);
+          break;
+	}
+    }
 }
 
 /*======== struct vary_node ** second_pass() ==========
@@ -432,16 +450,6 @@ void my_main() {
                  op[i].op.tween.end_frame,
                  op[i].op.tween.knob_list0->name,
                  op[i].op.tween.knob_list1->name);
-          break;
-        case FRAMES:
-          printf("Num frames: %4.0f\n",op[i].op.frames.num_frames);
-          break;
-        case VARY:
-          printf("Vary: %4.0f %4.0f, %4.0f %4.0f\n",
-                 op[i].op.vary.start_frame,
-                 op[i].op.vary.end_frame,
-                 op[i].op.vary.start_val,
-                 op[i].op.vary.end_val);
           break;
         case PUSH:
           // printf("Push");
