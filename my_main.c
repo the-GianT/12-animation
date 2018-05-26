@@ -71,11 +71,13 @@ void first_pass() {
   //they must be extern variables
   char varied; // acts as a boolean that tells whether vary has been called
   extern int num_frames;
-  extern char name[128];
+  // extern char name[128];
+  extern char *name;
   int i;
 
   varied = '\0';
   num_frames = 0;
+  name = NULL;
 
   for (i=0;i<lastop;i++) {
     switch (op[i].opcode)
@@ -86,9 +88,12 @@ void first_pass() {
 	// printf("Num frames: %d\n", num_frames);
 	break;
       case BASENAME:
+	/*
 	strncpy(name, op[i].op.basename.p->name, sizeof(name));
 	name[sizeof(name) * sizeof(char) - 1] = '\0';
-	// printf("Basename: \"%s\"\n", name);
+	*/
+	name = op[i].op.basename.p->name;
+	printf("Basename: \"%s\"\n", name);
 	// print_symtab();
       case VARY:
 	/*
@@ -128,11 +133,46 @@ void first_pass() {
   vary_node corresponding to the given knob with the
   appropirate value.
   ====================*/
-struct vary_node ** second_pass() {
-  int i;
+// struct vary_node ** second_pass() {
+void second_pass(struct vary_node ** vary)
+{
+  int i, j;
 
-  
-  return NULL;
+  // initialize all frames to null
+  for (i = 0; i < num_frames; i++) {
+    vary[i] = NULL;
+  }
+
+  for (i=0;i<lastop;i++) {
+    double jump; // number by which to incremement the knob for each frame
+    double value; // value of knob in current frame
+    
+    switch (op[i].opcode)
+      {
+      case VARY:
+	/*
+	printf("Vary: %4.0f %4.0f, %4.0f %4.0f\n",
+	       op[i].op.vary.start_frame,
+	       op[i].op.vary.end_frame,
+	       op[i].op.vary.start_val,
+	       op[i].op.vary.end_val);
+	*/
+	jump = (op[i].op.vary.end_val - op[i].op.vary.start_val)
+	  / (op[i].op.vary.end_frame - op[i].op.vary.start_frame);
+
+	value = op[i].op.vary.start_val;
+	for (j = op[i].op.vary.start_frame; j <= op[i].op.vary.end_frame; j++) {
+	  struct vary_node *new;
+	  new = (struct vary_node *)malloc(sizeof(struct vary_node));
+	  new->name = op[i].op.vary.p->name;
+	  new->value = value;
+	  new->next = vary[j];
+	  vary[j] = new;
+	  value += jump;
+	}
+	break;
+      }
+  }
 }
 
 /*======== void print_knobs() ==========
@@ -211,6 +251,9 @@ void my_main() {
   double sreflect[3];
 
   first_pass();
+
+  struct vary_node *vary[num_frames];
+  second_pass(vary);
 
   ambient.red = 50;
   ambient.green = 50;

@@ -128,11 +128,11 @@ extern struct command op[MAX_COMMANDS];
 
 //Code generator headers
 int num_frames;
-char name[128];
+char *name;
 
 struct vary_node {
   
-  char name[128];
+  char *name;
   double value;
   struct vary_node *next;
 };
@@ -140,7 +140,8 @@ struct vary_node {
 void print_knobs();
 void process_knobs();
 void first_pass();
-struct vary_node ** second_pass();
+// struct vary_node ** second_pass();
+void second_pass();
 
 void print_pcode();
 void my_main();
