@@ -61,7 +61,7 @@ void print_symtab()
           printf("value: %6.2f\n", symtab[i].s.value);
           break;
         case SYM_FILE:
-          printf("Type: SYM_VALUE\n");
+          printf("Type: SYM_FILE\n");
           printf("Name: %s\n",symtab[i].name);
         }
       printf("\n");

@@ -69,27 +69,44 @@
 void first_pass() {
   //in order to use name and num_frames throughout
   //they must be extern variables
+  char varied; // acts as a boolean that tells whether vary has been called
   extern int num_frames;
   extern char name[128];
+  int i;
 
-  for (i=0;i<lastop;i++)
-    {
-      switch (op[i].opcode)
-	{
-	case FRAMES:
-	  printf("Num frames: %4.0f\n",num_frames = op[i].op.frames.num_frames);
-	  break;
-	case BASENAME:
-	  // strncpy(
-	case VARY:
-          printf("Vary: %4.0f %4.0f, %4.0f %4.0f\n",
-                 op[i].op.vary.start_frame,
-                 op[i].op.vary.end_frame,
-                 op[i].op.vary.start_val,
-                 op[i].op.vary.end_val);
-          break;
-	}
-    }
+  varied = '\0';
+  num_frames = 0;
+
+  for (i=0;i<lastop;i++) {
+    switch (op[i].opcode)
+      {
+      case FRAMES:
+	// printf("Num frames: %4.0f\n", op[i].op.frames.num_frames);
+	num_frames = op[i].op.frames.num_frames;
+	// printf("Num frames: %d\n", num_frames);
+	break;
+      case BASENAME:
+	strncpy(name, op[i].op.basename.p->name, sizeof(name));
+	name[sizeof(name) * sizeof(char) - 1] = '\0';
+	// printf("Basename: \"%s\"\n", name);
+	// print_symtab();
+      case VARY:
+	/*
+	printf("Vary: %4.0f %4.0f, %4.0f %4.0f\n",
+	       op[i].op.vary.start_frame,
+	       op[i].op.vary.end_frame,
+	       op[i].op.vary.start_val,
+	       op[i].op.vary.end_val);
+	*/
+	varied = 't'; // set to true
+	// printf("varied: %c\n", varied);
+	break;
+      }
+  }
+  if (varied && !num_frames) {
+    printf("Error: vary called but frames not set\n");
+    exit(EXIT_FAILURE);
+  }
 }
 
 /*======== struct vary_node ** second_pass() ==========
@@ -112,6 +129,9 @@ void first_pass() {
   appropirate value.
   ====================*/
 struct vary_node ** second_pass() {
+  int i;
+
+  
   return NULL;
 }
 
@@ -189,6 +209,8 @@ void my_main() {
   double areflect[3];
   double dreflect[3];
   double sreflect[3];
+
+  first_pass();
 
   ambient.red = 50;
   ambient.green = 50;
@@ -437,9 +459,6 @@ void my_main() {
 	  matrix_mult(peek(systems), trans);
 	  copy_matrix(trans, peek(systems));
 	  free_matrix(trans);
-          break;
-        case BASENAME:
-          printf("Basename: %s\n",op[i].op.basename.p->name);
           break;
         case SAVE_KNOBS:
           printf("Save knobs: %s\n",op[i].op.save_knobs.p->name);
