@@ -157,6 +157,12 @@ void second_pass(struct vary_node ** vary)
 	       op[i].op.vary.start_val,
 	       op[i].op.vary.end_val);
 	*/
+	if (op[i].op.vary.start_val < 0
+	    || op[i].op.vary.end_val > num_frames
+	    || op[i].op.vary.start_val > op[i].op.vary.end_val) {
+	  printf("Error: Invalid arguments for vary\n");
+	  exit(EXIT_FAILURE);
+	}
 	jump = (op[i].op.vary.end_val - op[i].op.vary.start_val)
 	  / (op[i].op.vary.end_frame - op[i].op.vary.start_frame);
 
