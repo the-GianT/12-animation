@@ -158,6 +158,9 @@ void make_animation( char * name ) {
   char name_arg[128];
 
   sprintf(name_arg, "anim/%s*", name);
+  // printf("name: %s\n", name);
+  // printf("name_arg: %s\n", name_arg);
+  // printf(".gif address: %x\n", ".gif");
   strncat(name, ".gif", 128);
   printf("Making animation: %s\n", name);
   f = fork();

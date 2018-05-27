@@ -128,7 +128,7 @@ extern struct command op[MAX_COMMANDS];
 
 //Code generator headers
 int num_frames;
-char *name;
+char name[128];
 
 struct vary_node {
   
