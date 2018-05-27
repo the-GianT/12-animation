@@ -142,6 +142,7 @@ void second_pass(struct vary_node ** vary)
   for (i=0;i<lastop;i++) {
     double jump; // number by which to incremement the knob for each frame
     double value; // value of knob in current frame
+    struct vary_node *new;
     
     switch (op[i].opcode)
       {
@@ -163,8 +164,7 @@ void second_pass(struct vary_node ** vary)
 	  / (op[i].op.vary.end_frame - op[i].op.vary.start_frame);
 
 	value = op[i].op.vary.start_val;
-	for (j = op[i].op.vary.start_frame; j <= op[i].op.vary.end_frame; j++) {
-	  struct vary_node *new;
+	for (j = op[i].op.vary.start_frame; j < op[i].op.vary.end_frame; j++) {
 	  new = (struct vary_node *)malloc(sizeof(struct vary_node));
 	  new->name = op[i].op.vary.p->name;
 	  new->value = value;
@@ -172,6 +172,11 @@ void second_pass(struct vary_node ** vary)
 	  vary[j] = new;
 	  value += jump;
 	}
+	new = (struct vary_node *)malloc(sizeof(struct vary_node));
+	new->name = op[i].op.vary.p->name;
+	new->value = op[i].op.vary.end_val;
+	new->next = vary[j];
+	vary[j] = new;
 	break;
       }
   }
