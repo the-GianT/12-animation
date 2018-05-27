@@ -5,6 +5,7 @@ CC= gcc
 
 run: all
 	./mdl simple_anim.mdl
+	animate -delay 3 anim/simple*
 
 all: parser
 
