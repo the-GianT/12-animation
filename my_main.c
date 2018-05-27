@@ -578,7 +578,7 @@ void my_main() {
     save_extension(t, framename);
     
     free_stack(systems);
-    tmp->lastcol = 0;
+    // tmp->lastcol = 0;
     systems = new_stack();
     clear_screen( t );
     clear_zbuffer(zb);
