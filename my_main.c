@@ -72,12 +72,10 @@ void first_pass() {
   char varied; // acts as a boolean that tells whether vary has been called
   extern int num_frames;
   extern char name[128];
-  // extern char *name;
   int i;
 
   varied = '\0';
   num_frames = 1;
-  // name = (char *)malloc(sizeof(char) * sizeof("image"));
   strcpy(name, "image");
 
   for (i=0;i<lastop;i++) {
@@ -545,18 +543,15 @@ void my_main() {
 		   op[i].op.tween.knob_list1->name);
 	    break;
 	  case PUSH:
-	    // printf("Push");
 	    push(systems);
 	    break;
 	  case POP:
-	    // printf("Pop");
 	    pop(systems);
 	    break;
 	  case GENERATE_RAYFILES:
 	    printf("Generate Ray Files\n");
 	    break;
 	  case SAVE:
-	    // printf("Save: %s",op[i].op.save.p->name);
 	    save_extension(t, op[i].op.save.p->name);
 	    break;
 	  case SHADING:
@@ -569,11 +564,9 @@ void my_main() {
 	    printf("Focal: %f\n",op[i].op.focal.value);
 	    break;
 	  case DISPLAY:
-	    // printf("Display");
 	    display(t);
 	    break;
 	  }
-	// printf("\n");
       }
     sprintf(framename, "anim/%s%03d.png", name, j);
     // printf("framename: %s\n", framename);
@@ -590,7 +583,6 @@ void my_main() {
 
   // Free all the nodes in the knob table
   for (j = 0; j < num_frames; j++) {
-    
     dummy = vary[j];
     while (dummy) {
       struct vary_node *lead_dummy = dummy->next;
